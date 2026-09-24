@@ -10,13 +10,12 @@ const { processQuery } = require("../services/nlpService");
  */
 const handleChat = async (req, res) => {
   try {
-    const { sessionId, userId, message } = req.body;
-
+        const { sessionId, userId, message, timezone } = req.body;
     if (!sessionId || !message) {
       return res.status(400).json({ error: "sessionId and message are required." });
     }
 
-    const { intent, confidence, reply } = processQuery(message);
+    const { intent, confidence, reply } = processQuery(message, timezone);
 
     const userTurn = { sender: "user", text: message, intent, confidence };
     const botTurn = { sender: "bot", text: reply, intent, confidence };

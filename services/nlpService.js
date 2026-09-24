@@ -110,10 +110,10 @@ const responseBank = {
     "Anytime!",
     "Glad I could help.",
   ]),
-  time_query: () =>
-    `It's currently ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}.`,
-  date_query: () =>
-    `Today's date is ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}.`,
+  time_query: (tz) =>
+    `It's currently ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: tz || "UTC" })}.`,
+  date_query: (tz) =>
+    `Today's date is ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: tz || "UTC" })}.`,
   name_query: () => "I'm your AI Virtual Assistant, built on the MERN stack.",
   capability_query: () =>
     "I can chat with you, answer simple queries (time, date, jokes), remember our conversation history, and can be extended with more intents easily.",
@@ -139,7 +139,7 @@ function pick(arr) {
  * Confidence is derived from the classifier's internal probability
  * distribution over all trained labels (context-aware — not a flat guess).
  */
-function processQuery(rawText) {
+function processQuery(rawText, timezone) {
   const text = (rawText || "").trim();
 
   if (!text) {
@@ -183,7 +183,7 @@ function processQuery(rawText) {
     confidence = Number(Math.min(1, confidence + 0.15).toFixed(3));
   }
 
-  const reply = (responseBank[intent] || responseBank.unknown)();
+    const reply = (responseBank[intent] || responseBank.unknown)(timezone);
 
   return { intent, confidence, reply };
 }
